@@ -34,7 +34,7 @@ function GameBoard() {
         ];
     };
 
-    const addInput = () => {
+    const addInput = (player) => {
         let userInputPosition = prompt("Enter a number between 1-9");
 
         if (
@@ -59,19 +59,64 @@ function GameBoard() {
         showGameBoard()
     }
 
-    const checkWinner = () => {
-        for (const row of board) {
-            for (let i = 0; i < row.length; i++) {
-                console.log(row[i]);
-            };
-        }
+    const checkWinner = (rowOrCol) => {
+        if (rowOrCol==="XXX") {
+            console.log("You Win!");
+            return;
+        } else if (rowOrCol==="OOO") {
+            console.log("You Lose!");
+            return;
+        } 
     }
 
-    return { player, showGameBoard, resetGameBoard, addInput, checkWinner };
+    const checkSpaces = () => {
+
+        //Horizontal Row Check
+        for (const row of board) {
+            const finalRow = row.reduce((total, currentPlace) => 
+                total + currentPlace
+            ,"")
+
+            checkWinner(finalRow)
+        };
+
+        //Vertical Col Check
+        let firstCol = "";
+        for (let i = 0; i < 3; i++) {
+            firstCol += board[i][0]
+
+            checkWinner(firstCol)
+        };
+
+        let secCol = "";
+        for (let i = 0; i < 3; i++) {
+            secCol += board[i][1]
+
+            checkWinner(secCol)
+        };
+
+        let thirdCol = "";
+        for (let i = 0; i < 3; i++) {
+            thirdCol += board[i][2]
+
+            checkWinner(thirdCol)
+        };
+
+        //Diag col checks
+        let firstDiagCol = ""
+        firstDiagCol = board[0][0] + board[1][1] + board[2][2]
+            checkWinner(firstDiagCol)
+
+        let secDiagCol = ""
+        secDiagCol = board[0][2] + board[1][1] + board[2][0]
+            checkWinner(secDiagCol)
+    }
+
+    return { player, showGameBoard, resetGameBoard, addInput, checkSpaces };
 }
 
 const gameBoard = GameBoard();
-gameBoard.addInput()
-gameBoard.addInput()
-gameBoard.addInput()
-// gameBoard.checkWinner()
+gameBoard.addInput(gameBoard.player)
+gameBoard.addInput(gameBoard.player)
+gameBoard.addInput(gameBoard.player)
+gameBoard.checkSpaces()
