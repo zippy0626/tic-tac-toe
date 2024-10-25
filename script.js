@@ -78,62 +78,74 @@ function GameBoard() {
     }
 
     const checkForThrees = (rowOrCol) => {
-        if (rowOrCol==="XXX") {
-            console.log("You Win!");
-            return;
-        } else if (rowOrCol==="OOO") {
-            console.log("You Lose!");
-            return;
-        } 
+        //if row is the same to player
+        if (rowOrCol === "XXX" && gameBoard.getPlayer() === "X") {
+            return true;
+        }
+        if (rowOrCol === "OOO" && gameBoard.getPlayer() === "O") {
+            return true;
+        }
+        return false;
     }
 
     const checkWinner = () => {
         //Horizontal Row Check
         for (const row of board) {
-            const finalRow = row.reduce((total, currentPlace) => 
-                total + currentPlace
-            ,"")
-
-            checkForThrees(finalRow)
+            const finalRow = row.join("")
+            if (checkForThrees(finalRow)) {
+                return true;
+            }
         };
 
         //Vertical Col Check
         let firstCol = "";
         for (let i = 0; i < 3; i++) {
             firstCol += board[i][0]
-
-            checkForThrees(firstCol)
+        }
+        if (checkForThrees(firstCol)) {
+            return true;
         };
 
         let secCol = "";
         for (let i = 0; i < 3; i++) {
             secCol += board[i][1]
-
-            checkForThrees(secCol)
         };
+        if (checkForThrees(secCol)) {
+            return true;
+        }
 
         let thirdCol = "";
         for (let i = 0; i < 3; i++) {
             thirdCol += board[i][2]
-
-            checkForThrees(thirdCol)
         };
+        if (checkForThrees(thirdCol)) {
+            return true;
+        }
 
         //Diag col checks
         let firstDiagCol = ""
         firstDiagCol = board[0][0] + board[1][1] + board[2][2]
-            checkForThrees(firstDiagCol)
 
         let secDiagCol = ""
         secDiagCol = board[0][2] + board[1][1] + board[2][0]
-            checkForThrees(secDiagCol)
+
+        if (checkForThrees(firstDiagCol) || checkForThrees(secDiagCol)) {
+            return true;
+        }
+
+        //No winner
+        return false;
     }
 
-    return { player, logGameBoard, setPlayer, getPlayer, getGameBoard, resetGameBoard, addInput, checkWinner };
+    const playGame = () => {
+        
+    }
+
+    return { player, logGameBoard, setPlayer, getPlayer, getGameBoard, resetGameBoard, addInput, playGame, checkWinner };
 }
 
 const gameBoard = GameBoard();
-// gameBoard.setPlayer("O")
+
 
 
 function DisplayManager() {
@@ -151,7 +163,7 @@ function DisplayManager() {
 
         if (symbol==="X") {
             clickedElement.innerHTML = `
-                <img src="assets/icons/x-symbol.svg" alt="X"
+                <img src="assets/icons/x-symbol.svg" alt="X" class="x"
                 draggable="false">
             `
             return;
