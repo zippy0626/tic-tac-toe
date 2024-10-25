@@ -1,0 +1,99 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --borderRadius: 5px;
+    --primaryBGcol: rgb(255, 232, 182);
+    --secondBGcol: rgb(242, 217, 167);
+    --primaryBorderColor: rgb(227, 197, 131);
+    --secondaryBorderColor: rgb(237, 214, 164);
+    --XOcolor: rgb(180, 151, 87);
+}
+
+html, 
+body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background-color: var(--primaryBGcol);
+}
+
+/* GAME CONTAINER */
+.container {
+    --px: 500px;
+
+    width: var(--px);
+    height: var(--px);
+    --squareWH: calc(var(--px) / 3);
+
+    display: flex;
+    flex-wrap: wrap;
+
+    border-radius: var(--borderRadi);
+    background-color: var(--secondBGcol);
+    outline: 3px solid var(--secondaryBorderColor);
+}
+.square {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    --borderPxSize: 3px;
+    width: var(--squareWH);
+    height: var(--squareWH);
+
+    user-select: none;
+}
+
+/* Borders */
+.one, .four, .seven {
+    border-right: var(--borderPxSize) var(--primaryBorderColor) solid;
+}
+.three, .six, .nine {
+    border-left: var(--borderPxSize) var(--primaryBorderColor) solid;
+}
+
+.one, .two, .three {
+    border-bottom: var(--borderPxSize) var(--primaryBorderColor) solid;
+}
+.four, .five, .six {
+    border-bottom: var(--borderPxSize) var(--primaryBorderColor) solid;
+}
+
+/* x icon */
+img {
+    width: 70px;
+    user-select: none;
+}
+
+/* o icon */
+.o {
+    width: 78px;
+    height: 78px;
+
+    border-radius: 50%;
+    border: 10px solid var(--XOcolor);
+}
+.o:hover {
+    transform: scale(1.01);
+}
+
+
+/* SCOREBOARD */
+.scoreboard {
+    width: 500px;
+    height: 75px;
+
+    background-color: var(--secondBGcol);
+    margin-top: 10px;
+    outline: 3px solid var(--secondaryBorderColor);
+}

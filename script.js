@@ -1,5 +1,6 @@
 function GameBoard() {
     let board = [
+        
         ["_","_","_"],
         ["_","_","_"],
         ["_","_","_"],
@@ -8,18 +9,27 @@ function GameBoard() {
     let player = "X";
 
     const colPositions = {
-        1:0,
-        4:0,
-        7:0,
-        2:1,
-        5:1,
-        8:1,
-        3:2,
-        6:2,
-        9:2,
+        "one": 0,
+        "four": 0,
+        "seven": 0,
+        "two": 1,
+        "five": 1,
+        "eight": 1,
+        "three": 2,
+        "six": 2,
+        "nine": 2,
     }
 
-    const showGameBoard = () => {
+    const setPlayer = (symbol) => {
+        player = symbol;
+    }
+
+    const getPlayer = () => {
+        return player;
+    }
+
+    const logGameBoard = () => {
+        
         console.log("        Tic Tac Toe");
         board.forEach(row => {
             console.log(row);
@@ -27,6 +37,7 @@ function GameBoard() {
     };
 
     const resetGameBoard = () => {
+        
         board = [
             ["_","_","_"],
             ["_","_","_"],
@@ -34,21 +45,28 @@ function GameBoard() {
         ];
     };
 
-    const addInput = (player) => {
-        let userInputPosition = prompt("Enter a number between 1-9");
+    const getGameBoard = () => {
+        return board;
+    }
 
-        if (
-            userInputPosition < 1 || 
-            userInputPosition > 9 || 
-            userInputPosition===null || 
-            userInputPosition===undefined
-        ) {
-            return console.log("Please enter within the specified range.");
-        };
+    const addInput = (element) => {
 
-        // Calculate row directly
-        let row = Math.floor((userInputPosition - 1) / 3); //GPT
-        let col = colPositions[userInputPosition];
+        //Get number word only
+        let elementClass = element.classList.value.replace("square ", "")
+
+        //Make row, col
+        let row;
+        if (elementClass==="one" || elementClass==="two" || elementClass==="three") {
+            row = 0;
+        }
+        if (elementClass==="four" || elementClass==="five" || elementClass==="six") {
+            row = 1;
+        }
+        if (elementClass==="seven" || elementClass==="eight" || elementClass==="nine") {
+            row = 2;
+        }
+        
+        let col = colPositions[elementClass]
 
         if (board[row][col] != "_") {
             return console.log("Position is already taken! Try again.");
@@ -56,10 +74,10 @@ function GameBoard() {
 
         board[row][col] = player;
 
-        showGameBoard()
+        logGameBoard()
     }
 
-    const checkWinner = (rowOrCol) => {
+    const checkForThrees = (rowOrCol) => {
         if (rowOrCol==="XXX") {
             console.log("You Win!");
             return;
@@ -69,15 +87,14 @@ function GameBoard() {
         } 
     }
 
-    const checkSpaces = () => {
-
+    const checkWinner = () => {
         //Horizontal Row Check
         for (const row of board) {
             const finalRow = row.reduce((total, currentPlace) => 
                 total + currentPlace
             ,"")
 
-            checkWinner(finalRow)
+            checkForThrees(finalRow)
         };
 
         //Vertical Col Check
@@ -85,38 +102,83 @@ function GameBoard() {
         for (let i = 0; i < 3; i++) {
             firstCol += board[i][0]
 
-            checkWinner(firstCol)
+            checkForThrees(firstCol)
         };
 
         let secCol = "";
         for (let i = 0; i < 3; i++) {
             secCol += board[i][1]
 
-            checkWinner(secCol)
+            checkForThrees(secCol)
         };
 
         let thirdCol = "";
         for (let i = 0; i < 3; i++) {
             thirdCol += board[i][2]
 
-            checkWinner(thirdCol)
+            checkForThrees(thirdCol)
         };
 
         //Diag col checks
         let firstDiagCol = ""
         firstDiagCol = board[0][0] + board[1][1] + board[2][2]
-            checkWinner(firstDiagCol)
+            checkForThrees(firstDiagCol)
 
         let secDiagCol = ""
         secDiagCol = board[0][2] + board[1][1] + board[2][0]
-            checkWinner(secDiagCol)
+            checkForThrees(secDiagCol)
     }
 
-    return { player, showGameBoard, resetGameBoard, addInput, checkSpaces };
+    return { player, logGameBoard, setPlayer, getPlayer, getGameBoard, resetGameBoard, addInput, checkWinner };
 }
 
 const gameBoard = GameBoard();
-gameBoard.addInput(gameBoard.player)
-gameBoard.addInput(gameBoard.player)
-gameBoard.addInput(gameBoard.player)
-gameBoard.checkSpaces()
+// gameBoard.setPlayer("O")
+
+
+function DisplayManager() {
+
+    const getCurrentSquares = () => {
+        const squares = document.querySelectorAll('.square');
+
+        return squares;
+    }
+
+    const renderSymbol = (clickedElement, symbol) => {
+        if (clickedElement.innerHTML) {
+            return;
+        }
+
+        if (symbol==="X") {
+            clickedElement.innerHTML = `
+                <img src="assets/icons/x-symbol.svg" alt="X"
+                draggable="false">
+            `
+            return;
+        }
+
+        if (symbol==="O") {
+            clickedElement.innerHTML = `
+                <div class="o"></div>
+            `
+            return;
+        }
+    }
+
+    const addListener = () => {
+        document.querySelector('.container').addEventListener('click', (e) => {
+            const square = e.target.closest(".square")
+            
+            //Update actual user display based on symbol
+            renderSymbol(square, gameBoard.getPlayer())
+
+            //Update gameBoard representation
+            gameBoard.addInput(square)
+        });
+    }
+
+    return { getCurrentSquares, addListener }
+}
+
+const displayManager = DisplayManager()
+displayManager.addListener()
