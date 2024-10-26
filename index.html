@@ -8,23 +8,44 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="square one" draggable="false" aria-label="Tic Tac Toe square"></div>
-        <div class="square two" draggable="false" aria-label="Tic Tac Toe square"></div>
-        <div class="square three" draggable="false" aria-label="Tic Tac Toe square"></div>
+    <div class="body-container">
+        <div class="container">
+            <div class="square one" draggable="false" aria-label="Tic Tac Toe square"></div>
+            <div class="square two" draggable="false" aria-label="Tic Tac Toe square"></div>
+            <div class="square three" draggable="false" aria-label="Tic Tac Toe square"></div>
         
-        <div class="square four" draggable="false" aria-label="Tic Tac Toe square"></div>
-        <div class="square five" draggable="false" aria-label="Tic Tac Toe square"></div>
-        <div class="square six" draggable="false" aria-label="Tic Tac Toe square"></div>
+            <div class="square four" draggable="false" aria-label="Tic Tac Toe square"></div>
+            <div class="square five" draggable="false" aria-label="Tic Tac Toe square"></div>
+            <div class="square six" draggable="false" aria-label="Tic Tac Toe square"></div>
         
-        <div class="square seven" draggable="false" aria-label="Tic Tac Toe square"></div>
-        <div class="square eight" draggable="false" aria-label="Tic Tac Toe square"></div>
-        <div class="square nine" draggable="false" aria-label="Tic Tac Toe square"></div>
+            <div class="square seven" draggable="false" aria-label="Tic Tac Toe square"></div>
+            <div class="square eight" draggable="false" aria-label="Tic Tac Toe square"></div>
+            <div class="square nine" draggable="false" aria-label="Tic Tac Toe square"></div>
+        </div>
+
+        <div class="scoreboard">
+
+        </div>
     </div>
 
-    <div class="scoreboard">
+    <div class="modal" draggable="false">
+        <p class="logo">Tic Tac Toe</p>
+        <p class="text">Choose Your Team!</p>
 
+        <div class="btn-container">
+            <div class="btn x-team">
+                <img src="assets/icons/x-symbol.svg" alt="X" class="x"
+                draggable="false">
+            </div>
+            <div class="btn o-team">
+                <div class="o"></div>
+            </div>
+        </div>
+
+        <p class="player-team"></p>
+        <p class="text continue-btn">Continue</p>
     </div>
+    <div class="overlay" draggable="false"></div>
 </body>
 
     <script src="script.js"></script>

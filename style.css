@@ -144,7 +144,7 @@ body, .body-container {
     margin-inline: auto; 
 
     width: 350px;
-    height: 300px;
+    height: 320px;
     padding: 8px;
 
     background-color: var(--primaryBGcol);
@@ -165,9 +165,6 @@ body, .body-container {
     font-size: 1.05rem;
     margin-top: 8px;
 }
-.continue-btn {
-    margin-top: 1rem;
-}
 
 /* Team Btns */
 .btn-container {
@@ -182,7 +179,7 @@ body, .body-container {
 }
 .btn {
     width: 50%;
-    height: 95%;
+    height: 160px;
 
     background-color: var(--secondBGcol);
 
@@ -208,6 +205,10 @@ body, .body-container {
 }
 .btn:active {
     background-color: var(--activeColor);
+}
+.player-team {
+    font-size: 18px;
+    margin-top: 5px;
 }
 .continue-btn {
     padding: 8px;

@@ -50,6 +50,9 @@ function GameBoard() {
     }
 
     const addInput = (element) => {
+        if (element===null) {
+            return;
+        }
 
         //Get number word only
         let elementClass = element.classList.value.replace("square ", "")
@@ -141,7 +144,7 @@ function GameBoard() {
         
     }
 
-    return { player, logGameBoard, setPlayer, getPlayer, getGameBoard, resetGameBoard, addInput, playGame, checkWinner };
+    return { logGameBoard, setPlayer, getPlayer, getGameBoard, resetGameBoard, addInput, playGame, checkWinner };
 }
 
 const gameBoard = GameBoard();
@@ -150,13 +153,11 @@ const gameBoard = GameBoard();
 
 function DisplayManager() {
 
-    const getCurrentSquares = () => {
-        const squares = document.querySelectorAll('.square');
-
-        return squares;
-    }
-
     const renderSymbol = (clickedElement, symbol) => {
+        if (clickedElement===null) {
+            return;
+        }
+        
         if (clickedElement.innerHTML) {
             return;
         }
@@ -189,8 +190,46 @@ function DisplayManager() {
         });
     }
 
-    return { getCurrentSquares, addListener }
+    return { addListener }
 }
 
 const displayManager = DisplayManager()
 displayManager.addListener()
+
+
+// MODAL
+const modal = document.querySelector('.modal');
+const overlay = document.querySelector('.overlay');
+const playerTeamText = document.querySelector('.player-team');
+const modalContinueBtn = document.querySelector('.continue-btn');
+
+modal.addEventListener('click', (e) => {
+    if (e.target.classList.value.includes("continue")) {
+        return;
+    }
+
+    //Bundled event listener
+    const clickedBtnClassList = e.target.closest(".btn").classList.value
+
+    if (clickedBtnClassList.includes("x-team")) {
+        gameBoard.setPlayer("X")
+        playerTeamText.textContent = "You Chose Team X"
+
+        return;
+    }
+    if (clickedBtnClassList.includes("o-team")) {
+        gameBoard.setPlayer("O")
+        playerTeamText.textContent = "You Chose Team O"
+
+        return;
+    }
+});
+
+modalContinueBtn.addEventListener('click', () => {
+    if (!playerTeamText.textContent) {
+        return;
+    }
+
+    modal.classList.toggle("hidden")
+    overlay.classList.toggle("hidden")
+});
