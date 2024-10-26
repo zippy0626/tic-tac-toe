@@ -1,4 +1,6 @@
 function GameBoard() {
+    let isPlayersTurn = true;
+
     let board = [
         
         ["_","_","_"],
@@ -6,79 +8,72 @@ function GameBoard() {
         ["_","_","_"],
     ];
 
-    let player = "X";
+    let playerSymbol = "X";
 
-    const colPositions = {
-        "one": 0,
-        "four": 0,
-        "seven": 0,
-        "two": 1,
-        "five": 1,
-        "eight": 1,
-        "three": 2,
-        "six": 2,
-        "nine": 2,
-    }
-
-    const setPlayer = (symbol) => {
-        player = symbol;
-    }
-
-    const getPlayer = () => {
-        return player;
-    }
-
-    const logGameBoard = () => {
-        
-        console.log("        Tic Tac Toe");
-        board.forEach(row => {
-            console.log(row);
-        });
+    const positionMapper = {
+        "one": [0, 0],
+        "two": [0, 1],
+        "three": [0, 2],
+        "four": [1, 0],
+        "five": [1, 1],
+        "six": [1, 2],
+        "seven": [2, 0],
+        "eight": [2, 1],
+        "nine": [2, 2]
     };
 
-    const resetGameBoard = () => {
-        
-        board = [
-            ["_","_","_"],
-            ["_","_","_"],
-            ["_","_","_"],
-        ];
-    };
+    //
+        const getIsPlayerTurn = () => {
+            return isPlayersTurn;
+        }
+        const setIsPlayerTurn = (bool) => {
+            isPlayersTurn=bool;
+        }
 
-    const getGameBoard = () => {
-        return board;
-    }
+        const setPlayerSymbol = (symbol) => {
+            playerSymbol = symbol;
+        }
 
-    const addInput = (element) => {
-        if (element===null) {
+        const getPlayerSymbol = () => {
+            return playerSymbol;
+        }
+
+        const logGameBoard = () => {
+            
+            console.log("        Tic Tac Toe");
+            board.forEach(row => {
+                console.log(row);
+            });
+        };
+
+        const resetGameBoard = () => {
+            
+            board = [
+                ["_","_","_"],
+                ["_","_","_"],
+                ["_","_","_"],
+            ];
+        };
+
+        const getGameBoard = () => {
+            return board;
+        }
+    //    
+    
+    // ADD MOVES TO BOARD REPRESENTATION
+    const updateBoard = (symbol, position) => {//both str
+        let [row, col] = positionMapper[position]
+
+        if (board[row][col]!="_") {
+            console.log("Position is already taken!");
             return;
         }
 
-        //Get number word only
-        let elementClass = element.classList.value.replace("square ", "")
+        board[row][col] = symbol
 
-        //Make row, col
-        let row;
-        if (elementClass==="one" || elementClass==="two" || elementClass==="three") {
-            row = 0;
-        }
-        if (elementClass==="four" || elementClass==="five" || elementClass==="six") {
-            row = 1;
-        }
-        if (elementClass==="seven" || elementClass==="eight" || elementClass==="nine") {
-            row = 2;
-        }
-        
-        let col = colPositions[elementClass]
-
-        if (board[row][col] != "_") {
-            return console.log("Position is already taken! Try again.");
-        }
-
-        board[row][col] = player;
-
-        logGameBoard()
+        console.table(board);
     }
+    //
 
     const checkForThrees = (rowOrCol) => {
         //if row is the same to player
@@ -91,7 +86,7 @@ function GameBoard() {
         return false;
     }
 
-    const checkWinner = () => {
+    const checkWinner = () => {//
         //Horizontal Row Check
         for (const row of board) {
             const finalRow = row.join("")
@@ -140,85 +135,123 @@ function GameBoard() {
         return false;
     }
 
-    const playGame = () => {
-        
-    }
-
-    return { logGameBoard, setPlayer, getPlayer, getGameBoard, resetGameBoard, addInput, playGame, checkWinner };
+    return { logGameBoard, setPlayerSymbol, getPlayerSymbol, getGameBoard, resetGameBoard, updateBoard, checkWinner, getIsPlayerTurn, setIsPlayerTurn };
 }
 
 const gameBoard = GameBoard();
 
 
-
 function DisplayManager() {
+    const squares = Array.from(document.querySelectorAll('.square'));
 
-    const renderSymbol = (clickedElement, symbol) => {
-        if (clickedElement===null) {
-            return;
-        }
-        
-        if (clickedElement.innerHTML) {
-            return;
-        }
+    const collectHumanInput = () => {
+        const squaresContainer = document.querySelector('.container');
 
-        if (symbol==="X") {
-            clickedElement.innerHTML = `
-                <img src="assets/icons/x-symbol.svg" alt="X" class="x"
-                draggable="false">
-            `
-            return;
-        }
-
-        if (symbol==="O") {
-            clickedElement.innerHTML = `
-                <div class="o"></div>
-            `
-            return;
-        }
-    }
-
-    const addListener = () => {
-        document.querySelector('.container').addEventListener('click', (e) => {
-            const square = e.target.closest(".square")
+        squaresContainer.addEventListener('click', (e) => {
             
-            //Update actual user display based on symbol
-            renderSymbol(square, gameBoard.getPlayer())
+            if (!scoreBoardText.classList.contains("hidden")) {
+                scoreBoardText.classList.toggle("hidden")
+            }
 
-            //Update gameBoard representation
-            gameBoard.addInput(square)
+            const squarePos = e.target.classList.value.replace("square ","")
+            
+            showOnDOM(gameBoard.getPlayerSymbol(), squarePos)
         });
     }
+    
+    //Player and Bot Using this
+    const showOnDOM = (symbol, position) => {
+       
+        const squares = Array.from(document.querySelectorAll('.square'));
 
-    return { addListener }
+        //Mapping Approach with Obj's
+        const positionIndex = {
+            "one": 0,
+            "two": 1,
+            "three": 2,
+            "four": 3,
+            "five": 4,
+            "six": 5,
+            "seven": 6,
+            "eight": 7,
+            "nine": 8
+        };
+
+        const symbolHTML = {
+            "X": `<img src="assets/icons/x-symbol.svg" alt="X" class="x" draggable="false">`,
+            "O": `<div class="o"></div>`
+        };
+
+        const index = positionIndex[position]
+        squares[index].innerHTML = symbolHTML[symbol]
+
+        gameBoard.updateBoard(symbol, position)
+    }
+
+    return { squares, collectHumanInput, showOnDOM }
 }
 
 const displayManager = DisplayManager()
-displayManager.addListener()
+displayManager.collectHumanInput()
 
 
-// MODAL
+function TTTBot() {
+    let mySymbol = ""
+
+    const getBotSymbol = () => {
+        return mySymbol;
+    }
+
+    const setBotSymbol = () => {
+        if (gameBoard.getPlayerSymbol()==="X") {
+            mySymbol = "O"
+        } else if (gameBoard.getPlayerSymbol()==="O") {
+            mySymbol = "X"
+        }
+    }
+
+    const getMove = () => {//
+        let board = gameBoard.getGameBoard()
+        console.table(board);
+
+
+    }
+
+    return { getBotSymbol, setBotSymbol, getMove }
+}
+
+const bot = TTTBot()
+
+
+// MODAL + SCOREBOARD STUFF
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
 const playerTeamText = document.querySelector('.player-team');
 const modalContinueBtn = document.querySelector('.continue-btn');
+const scoreBoardText = document.querySelector('.scoreboard-text');
 
+//Bundled event listener
 modal.addEventListener('click', (e) => {
-    if (e.target.classList.value.includes("continue")) {
+    const targetEle = e.target
+
+    if (targetEle.classList.value.includes("continue")) {
         return;
     }
+    if (targetEle.closest(".btn")===null) {
+        return;
+    }
+    
+    const clickedBtnClassList = targetEle.closest(".btn").classList.value
 
-    //Bundled event listener
-    const clickedBtnClassList = e.target.closest(".btn").classList.value
-
+    //Set player here
     if (clickedBtnClassList.includes("x-team")) {
-        gameBoard.setPlayer("X")
+        gameBoard.setPlayerSymbol("X")
         playerTeamText.textContent = "You Chose Team X"
 
         return;
     }
     if (clickedBtnClassList.includes("o-team")) {
-        gameBoard.setPlayer("O")
+        gameBoard.setPlayerSymbol("O")
         playerTeamText.textContent = "You Chose Team O"
 
         return;
@@ -229,6 +262,11 @@ modalContinueBtn.addEventListener('click', () => {
     if (!playerTeamText.textContent) {
         return;
     }
+
+    scoreBoardText.textContent = "START!"
+
+    //Update Bot's symbol
+    bot.setBotSymbol()
 
     modal.classList.toggle("hidden")
     overlay.classList.toggle("hidden")
