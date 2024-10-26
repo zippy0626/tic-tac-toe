@@ -153,13 +153,23 @@ function DisplayManager() {
                 scoreBoardText.classList.toggle("hidden")
             }
 
+            //Player Check
+            if (!gameBoard.getIsPlayerTurn()) {
+                return;
+            }
+
             const squarePos = e.target.classList.value.replace("square ","")
             
             showOnDOM(gameBoard.getPlayerSymbol(), squarePos)
+
+            //Player Check
+            gameBoard.setIsPlayerTurn(false);
+
+            bot.getMove()
         });
     }
     
-    //Player and Bot Using this
+    //Player and Bot are both using this
     const showOnDOM = (symbol, position) => {
        
         const squares = Array.from(document.querySelectorAll('.square'));
@@ -198,6 +208,10 @@ displayManager.collectHumanInput()
 function TTTBot() {
     let mySymbol = ""
 
+    const getRandomInt = (max) => {
+        return Math.floor(Math.random() * max);
+    }
+
     const getBotSymbol = () => {
         return mySymbol;
     }
@@ -211,10 +225,27 @@ function TTTBot() {
     }
 
     const getMove = () => {//
-        let board = gameBoard.getGameBoard()
-        console.table(board);
+        const squares = Array.from(document.querySelectorAll('.square'));
+        
+        let randIndex = getRandomInt(10)
+        
+        //Flipped
+        const positionIndex = {
+            0: "one",
+            1: "two",
+            2: "three",
+            3: "four",
+            4: "five",
+            5: "six",
+            6: "seven",
+            7: "eight",
+            8: "nine"
+        };
 
+        displayManager.showOnDOM(bot.getBotSymbol(), positionIndex[randIndex])
 
+        //Player Check
+        gameBoard.setIsPlayerTurn(true);
     }
 
     return { getBotSymbol, setBotSymbol, getMove }
@@ -265,7 +296,7 @@ modalContinueBtn.addEventListener('click', () => {
 
     scoreBoardText.textContent = "START!"
 
-    //Update Bot's symbol
+    //Set Bot's symbol here
     bot.setBotSymbol()
 
     modal.classList.toggle("hidden")
