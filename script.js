@@ -10,7 +10,7 @@ function GameBoard() {
 
     let playerSymbol = "X";
 
-    const positionMapper = {
+    const stringToRowCol = {
         "one": [0, 0],
         "two": [0, 1],
         "three": [0, 2],
@@ -46,6 +46,10 @@ function GameBoard() {
             });
         };
 
+        const getGameBoardPos = (row, col) => {
+            return board[row][col];
+        }
+
         const resetGameBoard = () => {
             
             board = [
@@ -62,7 +66,8 @@ function GameBoard() {
     
     // ADD MOVES TO BOARD REPRESENTATION
     const updateBoard = (symbol, position) => {//both str
-        let [row, col] = positionMapper[position]
+
+        let [row, col] = stringToRowCol[position]
 
         if (board[row][col]!="_") {
             console.log("Position is already taken!");
@@ -70,26 +75,37 @@ function GameBoard() {
         }
 
         board[row][col] = symbol
-
-        console.table(board);
     }
-    //
 
     const checkForThrees = (rowOrCol) => {
-        //if row is the same to player
-        if (rowOrCol === "XXX" && gameBoard.getPlayer() === "X") {
+        //4 Human
+        if (rowOrCol === "XXX" && gameBoard.getPlayerSymbol() === "X") {
+            console.log(`You (${gameBoard.getPlayerSymbol()}) win!`);
             return true;
         }
-        if (rowOrCol === "OOO" && gameBoard.getPlayer() === "O") {
+        if (rowOrCol === "OOO" && gameBoard.getPlayerSymbol() === "O") {
+            console.log(`You (${gameBoard.getPlayerSymbol()}) win!`);
+            return true;
+        } 
+
+        //4 Bot
+        if (rowOrCol === "OOO" && bot.getBotSymbol() === "O") {
+            console.log(`Bot (${bot.getBotSymbol()}) wins!`);
             return true;
         }
+        if (rowOrCol === "XXX" && bot.getBotSymbol() === "X") {
+            console.log(`Bot (${bot.getBotSymbol()}) wins!`);
+            return true;
+        }
+
         return false;
     }
 
-    const checkWinner = () => {//
+    const checkWinner = () => {
         //Horizontal Row Check
         for (const row of board) {
             const finalRow = row.join("")
+
             if (checkForThrees(finalRow)) {
                 return true;
             }
@@ -135,7 +151,7 @@ function GameBoard() {
         return false;
     }
 
-    return { logGameBoard, setPlayerSymbol, getPlayerSymbol, getGameBoard, resetGameBoard, updateBoard, checkWinner, getIsPlayerTurn, setIsPlayerTurn };
+    return { stringToRowCol, setPlayerSymbol, getPlayerSymbol, getGameBoardPos, logGameBoard, getGameBoard, resetGameBoard, updateBoard, checkWinner, getIsPlayerTurn, setIsPlayerTurn };
 }
 
 const gameBoard = GameBoard();
@@ -144,11 +160,20 @@ const gameBoard = GameBoard();
 function DisplayManager() {
     const squares = Array.from(document.querySelectorAll('.square'));
 
+    //Handle Player Clicks + Bot Move
     const collectHumanInput = () => {
         const squaresContainer = document.querySelector('.container');
 
         squaresContainer.addEventListener('click', (e) => {
-            
+            const eleClassList = e.target.classList.value
+
+            if (!eleClassList.includes("square"),
+                e.target.innerHTML
+            ) 
+            {
+                return;
+            }
+
             if (!scoreBoardText.classList.contains("hidden")) {
                 scoreBoardText.classList.toggle("hidden")
             }
@@ -158,11 +183,11 @@ function DisplayManager() {
                 return;
             }
 
-            const squarePos = e.target.classList.value.replace("square ","")
+            const squarePos = eleClassList.replace("square ","")
             
             showOnDOM(gameBoard.getPlayerSymbol(), squarePos)
 
-            //Player Check
+            //Player Lock
             gameBoard.setIsPlayerTurn(false);
 
             bot.getMove()
@@ -170,12 +195,16 @@ function DisplayManager() {
     }
     
     //Player and Bot are both using this
-    const showOnDOM = (symbol, position) => {
+    const showOnDOM = (symbol, position) => {//both string
        
+        //Prevent Unwanted DOM change
+        if (gameBoard.checkWinner()) {//Fix to real logic
+            return;
+        }
+
         const squares = Array.from(document.querySelectorAll('.square'));
 
-        //Mapping Approach with Obj's
-        const positionIndex = {
+        const stringToNum = {
             "one": 0,
             "two": 1,
             "three": 2,
@@ -186,14 +215,16 @@ function DisplayManager() {
             "eight": 7,
             "nine": 8
         };
-
-        const symbolHTML = {
+        const XorO = {
             "X": `<img src="assets/icons/x-symbol.svg" alt="X" class="x" draggable="false">`,
             "O": `<div class="o"></div>`
         };
 
-        const index = positionIndex[position]
-        squares[index].innerHTML = symbolHTML[symbol]
+        const index = stringToNum[position]
+        //Prevent DOM Overwrite
+        if (!(squares[index].innerHTML)) {
+            squares[index].innerHTML = XorO[symbol]
+        }
 
         gameBoard.updateBoard(symbol, position)
     }
@@ -208,8 +239,26 @@ displayManager.collectHumanInput()
 function TTTBot() {
     let mySymbol = ""
 
-    const getRandomInt = (max) => {
-        return Math.floor(Math.random() * max);
+    const numToString = {
+        0: "one",
+        1: "two",
+        2: "three",
+        3: "four",
+        4: "five",
+        5: "six",
+        6: "seven",
+        7: "eight",
+        8: "nine"
+    };
+
+    let botMode = "easy"
+
+    const getBotMode = () => {
+        return botMode;
+    }
+
+    const setBotMode = (newMode) => {
+        botMode = newMode;
     }
 
     const getBotSymbol = () => {
@@ -224,34 +273,44 @@ function TTTBot() {
         }
     }
 
-    const getMove = () => {//
-        const squares = Array.from(document.querySelectorAll('.square'));
-        
-        let randIndex = getRandomInt(10)
-        
-        //Flipped
-        const positionIndex = {
-            0: "one",
-            1: "two",
-            2: "three",
-            3: "four",
-            4: "five",
-            5: "six",
-            6: "seven",
-            7: "eight",
-            8: "nine"
-        };
-
-        displayManager.showOnDOM(bot.getBotSymbol(), positionIndex[randIndex])
-
-        //Player Check
-        gameBoard.setIsPlayerTurn(true);
+    const getRandomInt = (max) => {
+        return Math.floor(Math.random() * max);
     }
 
-    return { getBotSymbol, setBotSymbol, getMove }
+    const randomMove = () => {//str
+        let attempts = 0;
+        while (attempts < 9) {
+          const randomPosition = numToString[getRandomInt(9)];
+          let [row, col] = gameBoard.stringToRowCol[randomPosition];
+
+          if (gameBoard.getGameBoardPos(row, col)==="_") {
+            return randomPosition;
+          }
+
+          attempts++;
+        }
+    }
+
+    const getMove = () => {//Fix to add real logic
+        
+        setTimeout(() => {
+            let randomBotMove = randomMove()
+
+            if (randomBotMove) {
+                displayManager.showOnDOM(getBotSymbol(), randomBotMove);
+            }
+            
+            //Player Unlocked
+            gameBoard.setIsPlayerTurn(true);
+        }, 500);
+
+    }
+
+    return { getBotSymbol, setBotSymbol, getMove, getBotMode, setBotMode }
 }
 
 const bot = TTTBot()
+
 
 
 // MODAL + SCOREBOARD STUFF
@@ -289,6 +348,7 @@ modal.addEventListener('click', (e) => {
     }
 });
 
+//Handle Modal Continue
 modalContinueBtn.addEventListener('click', () => {
     if (!playerTeamText.textContent) {
         return;
