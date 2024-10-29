@@ -13,6 +13,10 @@
     --XOcolor: rgb(180, 151, 87);
     --hoverColor: rgba(242, 217, 167, 0.671);
     --activeColor: rgb(234, 209, 161);
+    --modalFontColor: rgb(179, 157, 112);
+    --mainFontColor : rgb(145, 123, 78);
+    --boxColor: rgb(229, 204, 151);
+    --lightBoxColor: rgb(244, 220, 167);;
 }
 
 html, 
@@ -52,6 +56,12 @@ body, .body-container {
     border-radius: var(--borderRadi);
     background-color: var(--secondBGcol);
     outline: 3px solid var(--secondaryBorderColor);
+
+    position: relative;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
 }
 .square {
     display: flex;
@@ -154,7 +164,7 @@ body, .body-container {
     flex-direction: column;
     align-items: center;
 
-    color: rgb(179, 157, 112);
+    color: var(--modalFontColor);
     font-weight: bold;
 }
 
@@ -164,6 +174,7 @@ body, .body-container {
 .text {
     font-size: 1.05rem;
     margin-top: 8px;
+    width: fit-content;
 }
 
 /* Team Btns */
@@ -223,5 +234,124 @@ body, .body-container {
     transform: scale(1.05);
 }
 .continue-btn:active {
+    background-color: var(--activeColor);
+}
+
+/* SCOREBOARD */
+.scoreboard {
+    font-weight: bold;
+    font-family: inherit;
+    color: rgb(145, 123, 78);
+
+    display: flex;
+    align-items: center;
+    padding: 3px;
+
+    position: relative;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+.scoreboard-text {
+    font-size: 1.5rem;
+    
+    align-self: center;
+
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-inline: auto;/**/
+    
+    width: max-content;
+}
+.scoreboard-info {
+    height: 90%;
+    width: 150px;
+
+    background-color: var(--boxColor);
+    border-radius: 3px;
+    margin-left: 2px;
+    padding: 3px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    grid-template-areas:
+        "you-score bot-score"
+    ;
+    gap: 5px;   
+}
+.scoreboard-reset-btn {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+
+    font-size: 16px;
+    background-color: var(--lightBoxColor);
+    user-select: none;
+    cursor: pointer;
+
+    border-radius: 5px;
+    padding: 10px;
+    border: 2px var(--primaryBorderColor) solid;
+}
+.scoreboard-reset-btn:hover {
+    background-color: var(--hoverColor);
+    transform: scale(1.02);
+}
+.scoreboard-reset-btn:active {
+    background-color: var(--activeColor);
+}
+
+/* Score Component */
+.you-score, .bot-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+
+    background-color: var(--lightBoxColor);
+}
+.you-score .text, .bot-score .text {
+    font-size: 17px;
+}
+
+/* CONTAINER OVERLAY FOR MSG */
+.container-overlay {
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+
+    backdrop-filter: blur(5px);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    color: var(--mainFontColor);
+    font-size: 18px;
+    font-weight: bold;
+}
+.msg {
+    margin-bottom: 5px;
+}
+.container-overlay .btn {
+    width: 80px;
+    height: 30px;
+
+    background-color: var(--secondBGcol);
+    border: 2px var(--primaryBorderColor) solid;
+
+    margin-bottom: 5px;
+
+    user-select: none;
+}
+.container-overlay .btn:hover {
+    background-color: var(--hoverColor);
+}
+.container-overlay .btn:active {
     background-color: var(--activeColor);
 }
