@@ -11,8 +11,8 @@
     --primaryBorderColor: rgb(227, 197, 131);
     --secondaryBorderColor: rgb(237, 214, 164);
     --XOcolor: rgb(180, 151, 87);
-    --hoverColor: rgba(242, 217, 167, 0.671);
-    --activeColor: rgb(234, 209, 161);
+    --hoverColor: rgb(245, 217, 167);
+    --activeColor: rgb(239, 217, 167);
     --modalFontColor: rgb(179, 157, 112);
     --mainFontColor : rgb(145, 123, 78);
     --boxColor: rgb(229, 204, 151);
@@ -325,6 +325,7 @@ body, .body-container {
     position: absolute;
 
     backdrop-filter: blur(5px);
+    background-color: rgba(255, 255, 255, 0.05);
 
     display: flex;
     flex-direction: column;
@@ -336,6 +337,7 @@ body, .body-container {
     font-weight: bold;
 }
 .msg {
+    font-size: 22px;
     margin-bottom: 5px;
 }
 .container-overlay .btn {
